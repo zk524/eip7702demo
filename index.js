@@ -25,6 +25,8 @@ Promise.resolve(true).then(async () => {
     // accountB: transaction executor and gas payer account
     // accountC: recipient account
     const [accountA, accountB, accountC] = await ethers.getSigners()
+    const accountAwallet = new ethers.Wallet(hre.config.networks.hardhat.accounts[0].privateKey)
+    const accountBwallet = new ethers.Wallet(hre.config.networks.hardhat.accounts[1].privateKey)
 
     // Delegate.sol:
     const Delegate = await ethers.getContractFactory("Delegate")
@@ -37,8 +39,8 @@ Promise.resolve(true).then(async () => {
     console.log(`accountB balance: ${ethers.formatEther(await ethers.provider.getBalance(accountB.address))}`)
     console.log(`accountC balance: ${ethers.formatEther(await ethers.provider.getBalance(accountC.address))}`)
     await sendEIP7702Tx(
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[0].privateKey),
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[1].privateKey),
+        accountAwallet,
+        accountBwallet,
         delegateAddress,
         delegate.interface.encodeFunctionData("setTarget", [accountC.address])
     )
@@ -67,8 +69,8 @@ Promise.resolve(true).then(async () => {
 
     // Rescue
     await sendEIP7702Tx(
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[0].privateKey),
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[1].privateKey),
+        accountAwallet,
+        accountBwallet,
         rescueAddress,
         rescueDelegate.interface.encodeFunctionData("rescueToken", [USDTAddress, accountC.address, await token.balanceOf(accountA.address)])
     )
@@ -77,8 +79,8 @@ Promise.resolve(true).then(async () => {
 
     // Revoke
     await revokeDelegation(
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[0].privateKey),
-        new ethers.Wallet(hre.config.networks.hardhat.accounts[1].privateKey),
+        accountAwallet,
+        accountBwallet,
     )
 }).catch((e) => {
     console.log(e)

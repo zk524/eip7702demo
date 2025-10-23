@@ -1,7 +1,7 @@
 {
-  "name": "bsc",
+  "name": "eip7702",
   "version": "1.0.0",
-  "description": "Nexus Miner Club site builder",
+  "description": "EIP 7702 DEMO",
   "main": "index.js",
   "dependencies": {
     "@ethereumjs/common": "^10.0.0",
